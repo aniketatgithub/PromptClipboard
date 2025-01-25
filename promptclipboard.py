@@ -9,6 +9,7 @@ import sys  # For exiting the application
 texts = {
     "Skills": "Using the extracted keywords from the job description, refine my 'Skills' section to:\n1. Remove irrelevant technologies.\n2. Add all relevant ones mentioned in the job description, along with related tools and frameworks.\n3. Keep the section concise, impactful, and professional.\nReturn the updated 'Skills' section in LaTeX format.",
     "Experience": "Refine the 'Experience' section for my role at all the companies. Ensure:\n1. Four points for this role, 2 line each. each with 40+ words.\n2. Include relevant keywords and quantifiable results from the job description.\n3. Create believable, impactful achievements tied to the company’s domain (e.g., Viasat could include scalable systems or secure communications).\n4. Avoid repeating action verbs",
+    "Exp 2": "Each point should be 30+ words, believable, has all the ATS keywords you extracted, according to industry change the points and do not leave any open-ended question by providing enough context and believable impacts. Do not overuse the same action verbs.",
     "Projects": "Create two new projects for my 'Projects' section based on the job description. Follow these guidelines:\n1. Each project should align with technologies and keywords in the job description.\n2. Use a timeline that fits within my master’s program.\n3. Each project should have 3 points, 2 LINES EACH 30+ words each, with quantifiable results.\n4. Avoid repeating action verbs which you have already used in this as well as experience section\nReturn the updated 'Projects' section in LaTeX format."
 }
 
@@ -70,11 +71,31 @@ def create_window():
     window.attributes("-alpha", 0.85)  # Semi-transparent window
     window.configure(bg="#222222")  # Dark mode background
 
-    # Position the window near the mouse cursor
+    # Calculate safe position to ensure the window doesn't go out of screen bounds
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
     mouse_x, mouse_y = pyautogui.position()
-    window.geometry(f"200x120+{mouse_x}+{mouse_y}")
+    window_width, window_height = 250, 200  # Adjusted size to fit all buttons
+    safe_x = max(0, min(mouse_x, screen_width - window_width))
+    safe_y = max(0, min(mouse_y, screen_height - window_height))
+    window.geometry(f"{window_width}x{window_height}+{safe_x}+{safe_y}")
 
-    # Button style
+    # Add a close button on top
+    close_button = tk.Button(
+        window,
+        text="X",  # Close button text
+        command=exit_application,  # Close the application
+        font=("Arial", 10, "bold"),
+        bg="#FF5555",  # Red background for close button
+        fg="white",  # White text
+        relief="flat",
+        activebackground="#FF7777",
+        activeforeground="white",
+        bd=0
+    )
+    close_button.pack(side=tk.TOP, anchor="ne", padx=5, pady=5)  # Pack it to the top-right corner
+
+    # Button style for predefined texts
     button_style = {
         "font": ("Arial", 12),
         "bg": "#333333",
